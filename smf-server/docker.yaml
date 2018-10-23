@@ -1,0 +1,12 @@
+version: '2'
+services:
+    smf-redis:
+        image: redis
+        ports:
+            - 5803:6379
+
+    smf-mongo:
+        image: mongo
+        ports:
+            - 5801:27017
+            - 5802:27018

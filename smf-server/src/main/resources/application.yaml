@@ -1,0 +1,31 @@
+server:
+  contextPath: /smf
+  port: 80
+
+
+#constants
+constants:
+  max-length-of-id: 25 #ID 最大长度
+  default_number_of_elements: 10 #缺省每页显示的数据条数
+  max_number_of_elements: 50 #每页最多显示的数据条数
+
+spring:
+    data:
+        mongodb:
+            #' Authentication database name.'
+            #authentication-database: testDb
+
+            #'test # Database name.'
+            database: testDb
+
+            #field-naming-strategy: '# Fully qualified name of the FieldNamingStrategy to use.'
+            #grid-fs-database: '# GridFS database name.'
+
+            #'true # Enable Mongo repositories.'
+            repositories:
+                enabled: true
+
+            #Mongo database URI. Cannot be set with host, port and credentials.'
+            #mongodb://user:secret@mongo1.example.com:12345,mongo2.example.com:23456/test
+            uri: mongodb://127.0.0.1:5801
+

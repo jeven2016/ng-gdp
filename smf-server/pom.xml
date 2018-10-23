@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ng-gdp</artifactId>
+        <groupId>zjtech</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>smf-server</artifactId>
+
+    <properties>
+        <start-class>zjtech.WebApp</start-class>
+
+        <!-- The spring-boot-starter-parent chooses fairly conservative Java compatibility. If you want to follow our recommendation and use a later Java version you can add a java.version property:-->
+        <java.version>1.8</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- for selenium test-->
+        <!-- <dependency>
+             <groupId>org.seleniumhq.selenium</groupId>
+             <artifactId>selenium-server</artifactId>
+             <version>3.0.1</version>
+         </dependency>-->
+
+        <!--<dependency>
+            <groupId>com.timgroup</groupId>
+            <artifactId>java-statsd-client</artifactId>
+            <version>3.0.1</version>
+            <scope>test</scope>
+        </dependency>-->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- 启用spring将配置文件的内容注入annotation类的功能：　ShiroProperties-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- for spring data -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+
+        <!-- spring session-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session</artifactId>
+        </dependency>
+
+        <!--使用kryo序列化對象至redis中 -->
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jre8</artifactId>
+        </dependency>
+        <!-- service.javaClass.kotlin.qualifiedName 需要使用到kotlin reflection-->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-reflect</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.microutils</groupId>
+            <artifactId>kotlin-logging</artifactId>
+        </dependency>
+
+        <!-- Spring Boot includes an additional set of tools that can make the application development experience
+        a little more pleasant. The spring-boot-devtools module can be included in any project to provide
+        additional development-time features.-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+        <plugins>
+            <!-- pack this project to a executable jar file -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- The Spring Boot developer tools are not just limited to local development.
+                You can also use several features when running applications remotely.
+                Remote support is opt-in, to enable it you need to make sure that devtools is included in the repackaged archive: -->
+                <configuration>
+                    <excludeDevtools>false</excludeDevtools>
+                </configuration>
+            </plugin>
+
+            <!-- Kotlin plugin : the java source code stored in zjtech.mainmain/java,
+                    the Kotlin source code stored in zjtech.mainmain/kotlin-->
+            <plugin>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <version>${kotlin.version}</version>
+                <configuration>
+                    <compilerPlugins>
+                        <!-- info: https://blog.jetbrains.com/kotlin/2016/12/kotlin-1-0-6-is-here/-->
+                        <plugin>all-open</plugin>
+
+                        <plugin>spring</plugin>
+
+                        <!-- The no-arg compiler plugin generates an additional zero-argument constructor for classes with a specific annotation.
+                        The generated constructor is synthetic so it can’t be directly called from Java or Kotlin, but it can be called using reflection. -->
+                        <!--<plugin>no-arg</plugin>-->
+                    </compilerPlugins>
+                    <pluginOptions>
+                        <!-- 默认情况下所有的kotlin class及其方法都是final类型的，如果需要运行AOP能够拦截，则需要在此现实地标注哪些类型是要open的-->
+                        <option>all-open:annotation=zjtech.smf.common.utils.AllOpen</option>
+                    </pluginOptions>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-allopen</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
